@@ -5,7 +5,7 @@ function get_requestData (watershed, subbasin, streamcomid, stationcode, station
       'subbasin': subbasin,
       'streamcomid': streamcomid,
       'stationcode':stationcode,
-      'stationname': stationname,
+      'stationname': stationname
   };
   $.ajax({
       url: 'get-request-data',
@@ -162,7 +162,7 @@ function get_hydrographs (watershed, subbasin, streamcomid, stationcode, station
             'subbasin': subbasin,
             'streamcomid': streamcomid,
             'stationcode': stationcode,
-            'stationname': stationname
+            'stationname': stationname,
         },
         error: function() {
         	$('#hydrographs-loading').addClass('hidden');
