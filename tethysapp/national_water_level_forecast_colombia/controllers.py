@@ -163,6 +163,7 @@ def get_popup_response(request):
 
 		observed_adjusted = observed_df - min_value
 
+		'''Get Adjusted Data'''
 		observed_adjusted_file_path = os.path.join(app.get_app_workspace().path, 'observed_adjusted.json')
 		observed_adjusted.reset_index(level=0, inplace=True)
 		observed_adjusted['datetime'] = observed_adjusted['datetime'].dt.strftime('%Y-%m-%d')
