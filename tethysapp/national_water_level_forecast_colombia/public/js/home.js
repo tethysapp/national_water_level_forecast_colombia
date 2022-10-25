@@ -132,7 +132,7 @@ let capabilities = $.ajax(ajax_url, {
 		let x = capabilities.responseText
 		.split('<FeatureTypeList>')[1]
 		.split('HS-dd069299816c4f1b82cd1fb2d59ec0ab:south_america-colombia-geoglows-drainage_line')[1]
-		.split('LatLongBoundingBox ')[1]
+		.split('LatLongBoundingBox')[1]
 		.split('/></FeatureType>')[0];
 
 		let minx = Number(x.split('"')[1]);
@@ -649,6 +649,18 @@ function getRegionGeoJsons() {
         });
         map.addLayer(regionsLayer)
 
+        // Remove previous zoom layers
+        map.getLayers().forEach(function (regionsLayer) {
+        	if (regionsLayer.get('name') == 'geojsons_boundary')
+                map.removeLayer(regionsLayer);
+             });
+
+        // Remove previous zoom layers
+        map.getLayers().forEach(function (stationsLayer) {
+            if (stationsLayer.get('name') == 'geojsons_stations')
+                map.removeLayer(stationsLayer);
+        });
+
         setTimeout(function() {
             var myExtent = regionsLayer.getSource().getExtent();
             map.getView().fit(myExtent, map.getSize());
@@ -665,6 +677,217 @@ $('#stp-stations-toggle').on('change', function() {
 
 // Regions gizmo listener
 $('#regions').change(function() {getRegionGeoJsons()});
+
+// ############################################################
+// ############################################################
+
+// Add data of the list to search input window
+function list_search_func (value_selected) {
+    document.getElementById("search-txt").value = value_selected;
+};
+
+// Update data of the list
+function remove_names_for_list () {
+    let filter = document.getElementById("search-txt").value.toUpperCase();
+    let options = document.getElementById("list-search").getElementsByTagName("option");
+    
+    for (enu = 0; enu < options.length; enu++ ){
+        let txtValue = options[enu].value;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            options[enu].style.display = "";
+        } else {
+            options[enu].style.display = "none";
+        }
+
+    }
+};
+
+// Search gizmo
+function search_func () {
+    let zoom_desc = new $('#search-txt').val();
+    $("#list-search-container").addClass('hidden');
+
+    $.ajax({
+        url: "get-zoom-array",
+        type: "GET",
+        data: {
+            "zoom_desc": zoom_desc,
+        },
+
+        success: function (resp) {
+
+            let geojsons_boundary = resp['geojson'];
+            let message = resp['message'];
+            let geojson_staions = resp['stations'];
+            // let geojson_boundary_cont = resp['boundary-cont'];
+            // let geojson_stations_cont = resp['stations-cont'];
+
+            if (message < 400) {
+
+                // Read region to zoom in
+                var regionsSource = new ol.source.Vector({
+                    url: staticStations + geojsons_boundary,
+                    format: new ol.format.GeoJSON()
+                });
+
+                // Read stations in region
+                var stationsSource = new ol.source.Vector({
+                    url: staticStations + geojson_staions,
+                    format: new ol.format.GeoJSON()
+                });
+
+                // Style region to zoom in
+                var regionStyle = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 0, 0, 0)',
+                        width: 0,
+                    })
+                });
+                // Style stations in region
+                var stationsStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 7,
+                        fill: new ol.style.Fill({ color: 'rgba(0, 0, 0, 0)' }),
+                        stroke: new ol.style.Stroke({
+                            color: 'rgba(0, 0, 0, 1)',
+                            width: 2
+                        })
+                    })
+                });
+
+                // Build region to zoom in
+                var regionsLayer = new ol.layer.Vector({
+                    name: 'geojsons_boundary',
+                    source: regionsSource,
+                    style: regionStyle
+                });
+                // Build stations to region
+                var stationsLayer = new ol.layer.Vector({
+                    name: 'geojsons_stations',
+                    source: stationsSource,
+                    style: stationsStyle
+                });
+
+                // Remove old layers
+                map.getLayers().forEach(function(regionsLayer) {
+                if (regionsLayer.get('name')=='myRegion')
+                    map.removeLayer(regionsLayer);
+                });
+
+                // Remove previous zoom layers
+                map.getLayers().forEach(function (regionsLayer) {
+                    if (regionsLayer.get('name') == 'geojsons_boundary')
+                        map.removeLayer(regionsLayer);
+                });
+
+                // Remove previous zoom layers
+                map.getLayers().forEach(function (stationsLayer) {
+                    if (stationsLayer.get('name') == 'geojsons_stations')
+                        map.removeLayer(stationsLayer);
+                });
+
+                map.addLayer(regionsLayer);
+                map.addLayer(stationsLayer);
+
+                // Make zoom in to layer
+                setTimeout(function () {
+                    var myExtent = regionsLayer.getSource().getExtent();
+                    map.getView().fit(myExtent, map.getSize());
+                }, 500);
+
+                setTimeout(function () {
+                    map.getLayers().forEach(function (stationsLayer, regionsLayer) {
+                        if (stationsLayer.get('name') == 'geojsons_stations')
+                            map.removeLayer(stationsLayer);
+                        if (stationsLayer.get('name') == 'geojsons_boundary')
+                            map.removeLayer(regionsLayer);
+                    });
+                }, 10000);
+
+            } else if (message >= 400) {
+
+                // Read region to zoom in
+                var regionsSource = new ol.source.Vector({
+                    url: staticStations + geojsons_boundary,
+                    format: new ol.format.GeoJSON()
+                });
+
+                // Style region to zoom in
+                var regionStyle = new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 0, 0, 0)',
+                        width: 0,
+                    })
+                });
+
+                // Build region to zoom in
+                var regionsLayer = new ol.layer.Vector({
+                    name: 'geojsons_boundary',
+                    source: regionsSource,
+                    style: regionStyle
+                });
+
+                // Remove previous zoom layers
+                map.getLayers().forEach(function (regionsLayer) {
+                    if (regionsLayer.get('name') == 'geojsons_boundary')
+                        map.removeLayer(regionsLayer);
+                });
+
+                map.addLayer(regionsLayer);
+
+
+                // Make zoom in to layer
+                setTimeout(function () {
+                    var myExtent = regionsLayer.getSource().getExtent();
+                    map.getView().fit(myExtent, map.getSize());
+                }, 500);
+
+
+                $('#search-alert').html(
+                    '<p class="alert alert-danger" style="text-align: center"><strong>Busqueda invalida.</strong></p>'
+                );
+                $("#search-alert").removeClass('hidden');
+
+                setTimeout(function () {
+                    $('#search-alert').html(
+                        '<p></p>'
+                    );
+                    $("#search-alert").addClass('hidden');
+                }, 1500);
+            };
+
+        },
+
+        error: function () {
+
+            $('#search-alert').html(
+                '<p class="alert alert-danger" style="text-align: center"><strong>Busqueda invalida.</strong></p>'
+            );
+            $("#search-alert").removeClass('hidden');
+
+            setTimeout(function () {
+                $('#search-alert').html(
+                    '<p></p>'
+                );
+                $("#search-alert").addClass('hidden');
+            }, 1500);
+
+        }
+    });
+
+}
+
+function show_list_stations () {
+     $("#list-search-container").removeClass('hidden');
+}
+
+$("#list-search-container").addClass('hidden');
+document.getElementById("search-txt").onclick = function () { show_list_stations() };
+document.getElementById("search-btn").onclick = function () { search_func() };
+
+
+// ############################################################
+// ############################################################
 
 
 // Function for the select2 metric selection tool

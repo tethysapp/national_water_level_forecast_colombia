@@ -23,11 +23,15 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .app import NationalWaterLevelForecastColombia as app
 
+from .model import Stations_manage as stations
+
 def home(request):
 	"""
 	Controller for the app home page.
 	"""
 
+	global foo_station
+	
 	# List of Metrics to include in context
 	metric_loop_list = list(zip(metric_names, metric_abbr))
 
@@ -87,14 +91,22 @@ def home(request):
 		options=[(region_index[opt]['name'], opt) for opt in region_index]
 	)
 
+	# Load stations data (IDEAM_Stations_V2.json)
+	stations_file = os.path.join(os.path.dirname(__file__), 'public', 'stations', 'Selelcted_Stations_Colombia_WL.json')
+	foo_station = stations(path_dir=stations_file)
+	search_list = foo_station.search_list
+
 	context = {
 		"metric_loop_list": metric_loop_list,
 		"geoserver_endpoint": geoserver_endpoint,
 		"date_picker": date_picker,
-		"regions": regions
+		"regions": regions,
+
+        "search_list" : search_list,
 	}
 
 	return render(request, 'national_water_level_forecast_colombia/home.html', context)
+
 
 def get_popup_response(request):
 	"""
@@ -1320,3 +1332,35 @@ def get_forecast_ensemble_bc_data_csv(request):
 		return JsonResponse({
 			'error': f'{"error: " + str(e), "line: " + str(exc_tb.tb_lineno)}',
 		})
+
+
+############################################################
+def get_zoom_array(request):
+	zoom_description = request.GET['zoom_desc']
+
+	# Ivalid search
+	if zoom_description == '':
+		resp = {'geojson' : 'COLOMBIA.json',
+				'message'  : 404}
+		return JsonResponse(resp)
+
+	try:
+		file_name, station_file, message, station_cont, boundary_cont = foo_station(search_id=zoom_description)
+
+		return JsonResponse({'geojson' : file_name,
+							 'message' : message,
+							 'stations': station_file,
+							 'stations-cont' : station_cont,
+							 'boundary-cont' : boundary_cont})
+
+	except Exception as e:
+
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		print("error: " + str(e))
+		print("line: " + str(exc_tb.tb_lineno))
+
+		return JsonResponse({
+			'error': f'{"error: " + str(e), "line: " + str(exc_tb.tb_lineno)}',
+		})
+
+############################################################

@@ -107,6 +107,15 @@ class NationalWaterLevelForecastColombia(TethysAppBase):
                 url='get-forecast-ensemble-bc-data-csv',
                 controller='national_water_level_forecast_colombia.controllers.get_forecast_ensemble_bc_data_csv'
             ),
+            ########################################
+            ########################################
+            UrlMap(
+                name="get_zoom_array",
+                url="get-zoom-array",
+                controller="national_water_level_forecast_colombia.controllers.get_zoom_array",
+            ),
+            ########################################
+            ########################################
         )
 
         return url_maps

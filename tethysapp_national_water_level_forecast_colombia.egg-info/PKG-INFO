@@ -1,13 +1,8 @@
 Metadata-Version: 2.1
 Name: tethysapp-national-water-level-forecast-colombia
 Version: 1.0
-Summary: This app uses the Bias Correction, the GESS forecast, and the observed water level to National Hydrological Forecast Model in Colombia.
-Home-page: UNKNOWN
+Summary: This app uses the Bias Correction, the GESS forecast, and the observed water level to create a National Hydrological Forecast Model in Colombia.
+Home-page: 
 Author: Darlly Judith Rojas-Lesmes
 Author-email: djrojasl@unal.edu.co
-License: UNKNOWN
 Keywords: "Hydrology","Time Series","Bias Correction","Hydrostats","GEOGloWS","Water Level","Colombia"
-Platform: UNKNOWN
-
-UNKNOWN
-

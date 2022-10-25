@@ -34,7 +34,8 @@
 {% block scripts %}
   {{ block.super }}
   <script>
-    var staticGeoJSON = "{% static 'national_water_level_forecast_colombia/geojson/' %}";
+    var staticGeoJSON  = "{% static 'national_water_level_forecast_colombia/geojson/' %}";
+	var staticStations = "{% static 'national_water_level_forecast_colombia/stations/' %}";
   </script>
   {# Allows csrf verification with AJAX #}
   <script src="{% static 'national_water_level_forecast_colombia/js/regionsIndex.js' %}" type="text/javascript"></script>
