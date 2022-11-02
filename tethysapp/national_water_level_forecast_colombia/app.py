@@ -8,10 +8,10 @@ class NationalWaterLevelForecastColombia(TethysAppBase):
 
     name = 'National Water Level Forecast Colombia'
     index = 'national_water_level_forecast_colombia:home'
-    icon = 'national_water_level_forecast_colombia/images/colombian_rivers_logo_v2.png'
+    icon = 'national_water_level_forecast_colombia/images/national_water_level_forecast_colombia.jpeg'
     package = 'national_water_level_forecast_colombia'
     root_url = 'national-water-level-forecast-colombia'
-    color = '#8e44ad'
+    color = '#00374b'
     description = ''
     tags = '"Hydrology", "Time Series", "Bias Correction", "Hydrostats", "GEOGloWS", "Water Level", "Colombia"'
     enable_feedback = False
