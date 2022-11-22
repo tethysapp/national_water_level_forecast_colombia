@@ -116,6 +116,16 @@ class NationalWaterLevelForecastColombia(TethysAppBase):
             ),
             ########################################
             ########################################
+            UrlMap(
+                name = 'user_manual',
+                url = 'national-water-level-forecast-colombia/user_manual',
+                controller='national_water_level_forecast_colombia.controllers.user_manual',
+            ),
+            UrlMap(
+                name = 'technical_manual',
+                url = 'national-water-level-forecast-colombia/technical_manual',
+                controller='national_water_level_forecast_colombia.controllers.technical_manual',
+            ),
         )
 
         return url_maps

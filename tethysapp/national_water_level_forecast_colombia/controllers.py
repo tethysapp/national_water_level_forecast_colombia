@@ -85,13 +85,13 @@ def home(request):
 
     region_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson', 'index.json')))
     regions = SelectInput(
-        display_text='Zoom to a Region:',
+        display_text='Zoom al departamento:',
         name='regions',
         multiple=False,
         # original=True,
         options=[(region_index[opt]['name'], opt) for opt in region_index],
         initial='',
-        select2_options={'placeholder': 'Select a Region', 'allowClear': False}
+        select2_options={'placeholder': 'Selección del departamento', 'allowClear': False}
     )
 
     # Load stations data (IDEAM_Stations_V2.json)
@@ -102,25 +102,25 @@ def home(request):
     # Select Basins
     basin_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson2', 'index2.json')))
     basins = SelectInput(
-        display_text='Zoom to a Basin:',
+        display_text='Zoom a Z.H.:',
         name='basins',
         multiple=False,
         # original=True,
         options=[(basin_index[opt]['name'], opt) for opt in basin_index],
         initial='',
-        select2_options={'placeholder': 'Select a Basin', 'allowClear': False}
+        select2_options={'placeholder': 'Zona Hidrográfica', 'allowClear': False}
     )
 
     # Select SubBasins
     subbasin_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson3', 'index3.json')))
     subbasins = SelectInput(
-        display_text='Zoom to a Subbasin:',
+        display_text='Zoom a S.Z.H.:',
         name='subbasins',
         multiple=False,
         # original=True,
         options=[(subbasin_index[opt]['name'], opt) for opt in subbasin_index],
         initial='',
-        select2_options={'placeholder': 'Select a Subbasin', 'allowClear': False}
+        select2_options={'placeholder': 'Sub zona hidrográfica', 'allowClear': False}
     )
 
     context = {
@@ -1441,3 +1441,11 @@ def get_zoom_array(request):
         })
 
 ############################################################
+
+def user_manual(request):
+    context = {}
+    return render(request, 'national_water_level_forecast_colombia/user_manual.html', context)
+
+def technical_manual(request):
+    context = {}
+    return render(request, 'national_water_level_forecast_colombia/technical_manual.html', context)
